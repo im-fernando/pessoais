@@ -126,6 +126,10 @@ curl http://localhost:3000/api/sistema/health
 │       ├── utilidades.ts  # Rotas de utilidades
 │       └── sistema.ts     # Rotas de sistema
 ├── dist/                  # Código compilado (gerado)
+├── Dockerfile             # Configuração Docker
+├── docker-compose.yml     # Configuração Docker Compose
+├── deploy.sh              # Script de deploy automatizado
+├── .dockerignore          # Arquivos ignorados no build Docker
 ├── tsconfig.json          # Configuração TypeScript
 ├── package.json
 └── README.md
@@ -151,6 +155,132 @@ curl http://localhost:3000/api/sistema/health
 - **@scalar/fastify-api-reference** - Interface Scalar moderna para documentação da API
 - **Node.js** - Runtime JavaScript
 - **tsx** - Executor TypeScript para desenvolvimento
+
+## 🐳 Deploy com Docker
+
+### Deploy Automatizado (Recomendado)
+
+Para fazer deploy no Umbrel OS ou qualquer servidor Linux com Docker:
+
+```bash
+# 1. Clone ou copie o projeto para o servidor
+git clone <seu-repositorio> # ou copie os arquivos via SCP/SFTP
+
+# 2. Entre no diretório do projeto
+cd fastify-api-teste
+
+# 3. Execute o script de deploy
+chmod +x deploy.sh
+./deploy.sh
+```
+
+O script irá:
+- ✅ Verificar se Docker e Docker Compose estão instalados
+- ✅ Parar containers existentes
+- ✅ Construir a imagem Docker
+- ✅ Iniciar o container
+- ✅ Verificar se a API está respondendo
+
+### Deploy Manual com Docker Compose
+
+```bash
+# Construir e iniciar
+docker-compose up -d --build
+
+# Ver logs
+docker-compose logs -f
+
+# Parar
+docker-compose down
+
+# Reiniciar
+docker-compose restart
+```
+
+### Deploy Manual com Docker
+
+```bash
+# Construir a imagem
+docker build -t fastify-api-teste .
+
+# Executar o container
+docker run -d \
+  --name fastify-api-teste \
+  --restart unless-stopped \
+  -p 3000:3000 \
+  fastify-api-teste
+
+# Ver logs
+docker logs -f fastify-api-teste
+
+# Parar e remover
+docker stop fastify-api-teste
+docker rm fastify-api-teste
+```
+
+### Deploy no Umbrel OS
+
+1. **Via SSH:**
+   ```bash
+   # Conecte-se ao seu Umbrel via SSH
+   ssh usuario@seu-umbrel.local
+   
+   # Navegue até o diretório desejado (ex: ~/apps)
+   cd ~/apps
+   
+   # Clone ou copie o projeto
+   git clone <seu-repositorio> fastify-api
+   cd fastify-api
+   
+   # Execute o deploy
+   chmod +x deploy.sh
+   ./deploy.sh
+   ```
+
+2. **Via Interface Umbrel (se suportar Docker Compose):**
+   - Copie os arquivos do projeto para o Umbrel
+   - Use a interface para executar Docker Compose ou execute via SSH
+
+### Variáveis de Ambiente (Opcional)
+
+Crie um arquivo `.env` se precisar configurar variáveis:
+
+```bash
+NODE_ENV=production
+PORT=3000
+```
+
+E atualize o `docker-compose.yml` para incluir:
+```yaml
+env_file:
+  - .env
+```
+
+### Verificar Status
+
+```bash
+# Verificar se o container está rodando
+docker ps | grep fastify-api-teste
+
+# Verificar health check
+curl http://localhost:3000/api/sistema/health
+
+# Ver logs em tempo real
+docker-compose logs -f api
+```
+
+### Atualizar a Aplicação
+
+```bash
+# Parar containers
+docker-compose down
+
+# Atualizar código (git pull, etc)
+git pull  # ou copie novos arquivos
+
+# Reconstruir e reiniciar
+docker-compose up -d --build
+```
 
 ## 📄 Licença
 
