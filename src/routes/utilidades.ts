@@ -88,8 +88,7 @@ export async function utilidadesRoutes(
         properties: {
           texto: { 
             type: 'string',
-            description: 'Texto a ser hasheado',
-            example: 'minha senha secreta'
+            description: 'Texto a ser hasheado'
           },
           algoritmo: { 
             type: 'string', 
@@ -234,8 +233,7 @@ export async function utilidadesRoutes(
         properties: {
           texto: { 
             type: 'string',
-            description: 'Texto a ser convertido',
-            example: 'Hello World'
+            description: 'Texto a ser convertido'
           },
           formato: { 
             type: 'string', 
@@ -305,8 +303,7 @@ export async function utilidadesRoutes(
         properties: {
           texto: { 
             type: 'string',
-            description: 'Texto a ser analisado',
-            example: 'Hello World 123!'
+            description: 'Texto a ser analisado'
           }
         }
       },

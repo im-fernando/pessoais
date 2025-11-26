@@ -19,7 +19,7 @@ await fastify.register(cors, {
 // Registrar Swagger/OpenAPI
 await fastify.register(swagger, {
   openapi: {
-    openapi: '3.1.0',
+    openapi: '3.0.3',
     info: {
       title: 'API Fastify - Teste',
       description: 'API simples em Fastify com rotas interessantes para testes e desenvolvimento',

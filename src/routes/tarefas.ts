@@ -161,13 +161,11 @@ export async function tarefasRoutes(
           titulo: { 
             type: 'string', 
             minLength: 1,
-            description: 'Título da tarefa',
-            example: 'Aprender Fastify'
+            description: 'Título da tarefa'
           },
           descricao: { 
             type: 'string',
-            description: 'Descrição detalhada da tarefa',
-            example: 'Estudar a documentação do Fastify'
+            description: 'Descrição detalhada da tarefa'
           },
           prioridade: { 
             type: 'string', 
