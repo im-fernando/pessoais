@@ -50,6 +50,21 @@ npm run dev
 
 O servidor estará rodando em `http://localhost:3000`
 
+## 📚 Documentação da API
+
+A API possui documentação interativa completa usando Swagger/OpenAPI e Scalar:
+
+- **Swagger UI**: `http://localhost:3000/documentation` - Interface Swagger tradicional
+- **Scalar UI**: `http://localhost:3000/api-reference` - Interface moderna e elegante do Scalar
+- **OpenAPI JSON**: `http://localhost:3000/documentation/json` - Especificação OpenAPI em JSON
+
+A documentação inclui:
+- Descrições detalhadas de todas as rotas
+- Schemas de requisição e resposta
+- Exemplos de uso
+- Parâmetros e filtros disponíveis
+- Códigos de status HTTP
+
 ## 📖 Exemplos de Uso
 
 ### Criar uma tarefa
@@ -123,12 +138,17 @@ curl http://localhost:3000/api/sistema/health
 - Todas as rotas têm validação de schema quando necessário
 - O servidor usa logging automático do Fastify
 - Projeto escrito em TypeScript com tipagem forte
+- Documentação OpenAPI completa com Swagger e Scalar UI
+- Todas as rotas estão documentadas com exemplos e schemas detalhados
 
 ## 🛠️ Tecnologias
 
 - **Fastify** - Framework web rápido e eficiente
 - **TypeScript** - Superset JavaScript com tipagem estática
 - **@fastify/cors** - Plugin CORS para Fastify
+- **@fastify/swagger** - Geração automática de documentação OpenAPI
+- **@fastify/swagger-ui** - Interface Swagger UI para visualização da documentação
+- **@scalar/fastify-api-reference** - Interface Scalar moderna para documentação da API
 - **Node.js** - Runtime JavaScript
 - **tsx** - Executor TypeScript para desenvolvimento
 

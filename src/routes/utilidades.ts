@@ -36,7 +36,36 @@ export async function utilidadesRoutes(
   _options: FastifyPluginOptions
 ): Promise<void> {
   // Gerar UUID v4
-  fastify.get<{ Querystring: UuidQuery }>('/api/utilidades/uuid', async (request) => {
+  fastify.get<{ Querystring: UuidQuery }>('/api/utilidades/uuid', {
+    schema: {
+      description: 'Gera um ou múltiplos UUIDs v4',
+      tags: ['utilidades'],
+      querystring: {
+        type: 'object',
+        properties: {
+          quantidade: {
+            type: 'string',
+            description: 'Quantidade de UUIDs a gerar (1-100)',
+            default: '1'
+          }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            quantidade: { type: 'number' },
+            uuids: {
+              oneOf: [
+                { type: 'string' },
+                { type: 'array', items: { type: 'string' } }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }, async (request) => {
     const { quantidade = '1' } = request.query;
     const qtd = Math.min(Math.max(parseInt(quantidade) || 1, 1), 100);
     
@@ -51,12 +80,34 @@ export async function utilidadesRoutes(
   // Hash de texto
   fastify.post<{ Body: HashBody }>('/api/utilidades/hash', {
     schema: {
+      description: 'Gera hash de um texto usando diferentes algoritmos',
+      tags: ['utilidades'],
       body: {
         type: 'object',
         required: ['texto'],
         properties: {
-          texto: { type: 'string' },
-          algoritmo: { type: 'string', enum: ['md5', 'sha1', 'sha256', 'sha512'] }
+          texto: { 
+            type: 'string',
+            description: 'Texto a ser hasheado',
+            example: 'minha senha secreta'
+          },
+          algoritmo: { 
+            type: 'string', 
+            enum: ['md5', 'sha1', 'sha256', 'sha512'],
+            default: 'sha256',
+            description: 'Algoritmo de hash a ser utilizado'
+          }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            texto: { type: 'string' },
+            algoritmo: { type: 'string' },
+            hash: { type: 'string' },
+            tamanho: { type: 'number' }
+          }
         }
       }
     }
@@ -74,7 +125,58 @@ export async function utilidadesRoutes(
   });
 
   // Gerar senha aleatória
-  fastify.get<{ Querystring: SenhaQuery }>('/api/utilidades/senha', async (request, reply) => {
+  fastify.get<{ Querystring: SenhaQuery }>('/api/utilidades/senha', {
+    schema: {
+      description: 'Gera uma senha aleatória customizável',
+      tags: ['utilidades'],
+      querystring: {
+        type: 'object',
+        properties: {
+          tamanho: {
+            type: 'string',
+            description: 'Tamanho da senha (8-128)',
+            default: '16'
+          },
+          incluirNumeros: {
+            type: 'string',
+            description: 'Incluir números na senha',
+            default: 'true'
+          },
+          incluirSimbolos: {
+            type: 'string',
+            description: 'Incluir símbolos na senha',
+            default: 'true'
+          },
+          incluirMaiusculas: {
+            type: 'string',
+            description: 'Incluir letras maiúsculas',
+            default: 'true'
+          },
+          incluirMinusculas: {
+            type: 'string',
+            description: 'Incluir letras minúsculas',
+            default: 'true'
+          }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            senha: { type: 'string' },
+            tamanho: { type: 'number' },
+            configuracao: { type: 'object' }
+          }
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async (request, reply) => {
     const { 
       tamanho = '16', 
       incluirNumeros = 'true', 
@@ -124,12 +226,38 @@ export async function utilidadesRoutes(
   // Converter texto para diferentes formatos
   fastify.post<{ Body: ConverterBody }>('/api/utilidades/converter', {
     schema: {
+      description: 'Converte texto para diferentes formatos',
+      tags: ['utilidades'],
       body: {
         type: 'object',
         required: ['texto', 'formato'],
         properties: {
-          texto: { type: 'string' },
-          formato: { type: 'string', enum: ['base64', 'hex', 'uppercase', 'lowercase', 'reverse'] }
+          texto: { 
+            type: 'string',
+            description: 'Texto a ser convertido',
+            example: 'Hello World'
+          },
+          formato: { 
+            type: 'string', 
+            enum: ['base64', 'hex', 'uppercase', 'lowercase', 'reverse'],
+            description: 'Formato de conversão desejado'
+          }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            original: { type: 'string' },
+            formato: { type: 'string' },
+            resultado: { type: 'string' }
+          }
+        },
+        400: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' }
+          }
         }
       }
     }
@@ -169,11 +297,34 @@ export async function utilidadesRoutes(
   // Informações sobre um texto
   fastify.post<{ Body: AnalisarTextoBody }>('/api/utilidades/analisar-texto', {
     schema: {
+      description: 'Analisa um texto e retorna estatísticas detalhadas',
+      tags: ['utilidades'],
       body: {
         type: 'object',
         required: ['texto'],
         properties: {
-          texto: { type: 'string' }
+          texto: { 
+            type: 'string',
+            description: 'Texto a ser analisado',
+            example: 'Hello World 123!'
+          }
+        }
+      },
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            tamanho: { type: 'number' },
+            palavras: { type: 'number' },
+            caracteres: { type: 'number' },
+            caracteresSemEspacos: { type: 'number' },
+            linhas: { type: 'number' },
+            maiusculas: { type: 'number' },
+            minusculas: { type: 'number' },
+            numeros: { type: 'number' },
+            simbolos: { type: 'number' },
+            vazio: { type: 'boolean' }
+          }
         }
       }
     }

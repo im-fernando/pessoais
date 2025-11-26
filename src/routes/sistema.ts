@@ -20,7 +20,34 @@ export async function sistemaRoutes(
   _options: FastifyPluginOptions
 ): Promise<void> {
   // Informações do sistema
-  fastify.get('/api/sistema/info', async () => {
+  fastify.get('/api/sistema/info', {
+    schema: {
+      description: 'Retorna informações gerais do sistema',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            plataforma: { type: 'string' },
+            arquitetura: { type: 'string' },
+            nodeVersion: { type: 'string' },
+            uptime: {
+              type: 'object',
+              properties: {
+                processo: { type: 'number' },
+                sistema: { type: 'number' }
+              }
+            },
+            memoria: { type: 'object' },
+            cpus: { type: 'object' },
+            hostname: { type: 'string' },
+            homeDir: { type: 'string' },
+            tempDir: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async () => {
     return {
       plataforma: process.platform,
       arquitetura: process.arch,
@@ -46,7 +73,24 @@ export async function sistemaRoutes(
   });
 
   // Informações de memória detalhadas
-  fastify.get('/api/sistema/memoria', async () => {
+  fastify.get('/api/sistema/memoria', {
+    schema: {
+      description: 'Retorna informações detalhadas sobre a memória do sistema',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            total: { type: 'object' },
+            livre: { type: 'object' },
+            usada: { type: 'object' },
+            percentualUsado: { type: 'string' },
+            percentualLivre: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async () => {
     const total = os.totalmem();
     const livre = os.freemem();
     const usada = total - livre;
@@ -70,7 +114,21 @@ export async function sistemaRoutes(
   });
 
   // Informações das CPUs
-  fastify.get('/api/sistema/cpus', async () => {
+  fastify.get('/api/sistema/cpus', {
+    schema: {
+      description: 'Retorna informações sobre as CPUs do sistema',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            quantidade: { type: 'number' },
+            detalhes: { type: 'array' }
+          }
+        }
+      }
+    }
+  }, async () => {
     const cpus = os.cpus();
     
     return {
@@ -90,7 +148,21 @@ export async function sistemaRoutes(
   });
 
   // Informações de rede
-  fastify.get('/api/sistema/rede', async () => {
+  fastify.get('/api/sistema/rede', {
+    schema: {
+      description: 'Retorna informações sobre as interfaces de rede',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            interfaces: { type: 'object' },
+            hostname: { type: 'string' }
+          }
+        }
+      }
+    }
+  }, async () => {
     const interfaces = os.networkInterfaces();
     const interfacesFormatadas: Record<string, Array<{
       endereco: string;
@@ -121,7 +193,32 @@ export async function sistemaRoutes(
   });
 
   // Health check
-  fastify.get('/api/sistema/health', async (_request, reply) => {
+  fastify.get('/api/sistema/health', {
+    schema: {
+      description: 'Health check do sistema - verifica o status e saúde da API',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            status: { type: 'string' },
+            timestamp: { type: 'string' },
+            uptime: { type: 'number' },
+            memoria: { type: 'object' }
+          }
+        },
+        503: {
+          type: 'object',
+          properties: {
+            status: { type: 'string' },
+            timestamp: { type: 'string' },
+            uptime: { type: 'number' },
+            memoria: { type: 'object' }
+          }
+        }
+      }
+    }
+  }, async (_request, reply) => {
     const memoriaLivre = os.freemem();
     const memoriaTotal = os.totalmem();
     const percentualMemoriaLivre = (memoriaLivre / memoriaTotal) * 100;
@@ -153,7 +250,26 @@ export async function sistemaRoutes(
   });
 
   // Informações do processo Node.js
-  fastify.get('/api/sistema/processo', async () => {
+  fastify.get('/api/sistema/processo', {
+    schema: {
+      description: 'Retorna informações sobre o processo Node.js atual',
+      tags: ['sistema'],
+      response: {
+        200: {
+          type: 'object',
+          properties: {
+            pid: { type: 'number' },
+            versao: { type: 'string' },
+            plataforma: { type: 'string' },
+            arquitetura: { type: 'string' },
+            uptime: { type: 'number' },
+            memoria: { type: 'object' },
+            variaveisAmbiente: { type: 'number' }
+          }
+        }
+      }
+    }
+  }, async () => {
     const usoMemoria = process.memoryUsage();
     
     return {
