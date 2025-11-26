@@ -39,10 +39,10 @@ let proximoId = 1;
 
 export async function tarefasRoutes(
   fastify: FastifyInstance,
-  options: FastifyPluginOptions
+  _options: FastifyPluginOptions
 ): Promise<void> {
   // Listar todas as tarefas
-  fastify.get<{ Querystring: TarefasQuery }>('/api/tarefas', async (request, reply) => {
+  fastify.get<{ Querystring: TarefasQuery }>('/api/tarefas', async (request) => {
     const { status, prioridade } = request.query;
     
     let tarefasFiltradas = [...tarefas];
@@ -162,7 +162,7 @@ export async function tarefasRoutes(
   });
 
   // Estatísticas das tarefas
-  fastify.get('/api/tarefas/stats', async (request, reply) => {
+  fastify.get('/api/tarefas/stats', async () => {
     const stats = {
       total: tarefas.length,
       porStatus: {

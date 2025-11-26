@@ -19,7 +19,7 @@ await fastify.register(utilidadesRoutes);
 await fastify.register(sistemaRoutes);
 
 // Rota raiz
-fastify.get('/', async (request, reply) => {
+fastify.get('/', async () => {
   return {
     message: '🚀 API Fastify funcionando!',
     version: '1.0.0',

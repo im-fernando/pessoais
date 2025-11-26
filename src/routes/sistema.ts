@@ -17,10 +17,10 @@ const formatarBytes = (bytes: number): string => {
 
 export async function sistemaRoutes(
   fastify: FastifyInstance,
-  options: FastifyPluginOptions
+  _options: FastifyPluginOptions
 ): Promise<void> {
   // Informações do sistema
-  fastify.get('/api/sistema/info', async (request, reply) => {
+  fastify.get('/api/sistema/info', async () => {
     return {
       plataforma: process.platform,
       arquitetura: process.arch,
@@ -46,7 +46,7 @@ export async function sistemaRoutes(
   });
 
   // Informações de memória detalhadas
-  fastify.get('/api/sistema/memoria', async (request, reply) => {
+  fastify.get('/api/sistema/memoria', async () => {
     const total = os.totalmem();
     const livre = os.freemem();
     const usada = total - livre;
@@ -70,7 +70,7 @@ export async function sistemaRoutes(
   });
 
   // Informações das CPUs
-  fastify.get('/api/sistema/cpus', async (request, reply) => {
+  fastify.get('/api/sistema/cpus', async () => {
     const cpus = os.cpus();
     
     return {
@@ -90,7 +90,7 @@ export async function sistemaRoutes(
   });
 
   // Informações de rede
-  fastify.get('/api/sistema/rede', async (request, reply) => {
+  fastify.get('/api/sistema/rede', async () => {
     const interfaces = os.networkInterfaces();
     const interfacesFormatadas: Record<string, Array<{
       endereco: string;
@@ -121,7 +121,7 @@ export async function sistemaRoutes(
   });
 
   // Health check
-  fastify.get('/api/sistema/health', async (request, reply) => {
+  fastify.get('/api/sistema/health', async (_request, reply) => {
     const memoriaLivre = os.freemem();
     const memoriaTotal = os.totalmem();
     const percentualMemoriaLivre = (memoriaLivre / memoriaTotal) * 100;
@@ -153,7 +153,7 @@ export async function sistemaRoutes(
   });
 
   // Informações do processo Node.js
-  fastify.get('/api/sistema/processo', async (request, reply) => {
+  fastify.get('/api/sistema/processo', async () => {
     const usoMemoria = process.memoryUsage();
     
     return {

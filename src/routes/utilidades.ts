@@ -33,10 +33,10 @@ interface AnalisarTextoBody {
 
 export async function utilidadesRoutes(
   fastify: FastifyInstance,
-  options: FastifyPluginOptions
+  _options: FastifyPluginOptions
 ): Promise<void> {
   // Gerar UUID v4
-  fastify.get<{ Querystring: UuidQuery }>('/api/utilidades/uuid', async (request, reply) => {
+  fastify.get<{ Querystring: UuidQuery }>('/api/utilidades/uuid', async (request) => {
     const { quantidade = '1' } = request.query;
     const qtd = Math.min(Math.max(parseInt(quantidade) || 1, 1), 100);
     
@@ -60,7 +60,7 @@ export async function utilidadesRoutes(
         }
       }
     }
-  }, async (request, reply) => {
+  }, async (request) => {
     const { texto, algoritmo = 'sha256' } = request.body;
     
     const hash = crypto.createHash(algoritmo).update(texto).digest('hex');
@@ -177,7 +177,7 @@ export async function utilidadesRoutes(
         }
       }
     }
-  }, async (request, reply) => {
+  }, async (request) => {
     const { texto } = request.body;
     
     const analise = {
