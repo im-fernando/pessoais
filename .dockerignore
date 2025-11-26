@@ -14,8 +14,7 @@ Thumbs.db
 *.swp
 *.swo
 README.md
+DEPLOY.md
 .dockerignore
-Dockerfile
-docker-compose.yml
 deploy.sh
 

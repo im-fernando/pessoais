@@ -8,7 +8,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Instalar dependências
-RUN npm ci
+RUN npm install
 
 # Copiar código fonte
 COPY src ./src
@@ -21,11 +21,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copiar package.json para instalar apenas dependências de produção
+# Copiar package.json e package-lock.json (se existir) para instalar apenas dependências de produção
 COPY package*.json ./
 
 # Instalar apenas dependências de produção
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install --omit=dev --no-package-lock && npm cache clean --force
 
 # Copiar código compilado do builder
 COPY --from=builder /app/dist ./dist
